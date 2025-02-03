@@ -1,14 +1,38 @@
-  int light[2];
-  light[0] = analogRead(A0);
-  light[1] = analogRead(A1);
-  // light[2] = analogRead(A2);
+#include <Servo.h>
 
-  for(int i = 0; i < 2; i++)
-  {
-    Serial.print("Light number: ");
-    Serial.print(i);
-    Serial.print("(");
-    Serial.print(light[i]);
-    Serial.print(")\n");
-  }
-  delay(1000);
+Servo servo1;
+
+int angle = 0;
+int servoPin =  3;
+int photo1Pin = A0;
+int photo2Pin = A1;
+
+void setup() 
+{
+    Serial.begin(9600);
+    pinMode(servoPin, OUTPUT);
+    servo1.attach(servoPin);
+}
+
+void loop() 
+{
+    int photo1 = analogRead(photo1Pin);
+    int photo2 = analogRead(photo2Pin);
+
+    int diff = photo1 - photo2;
+    if (diff > 5)
+        angle -= 2;
+    if (diff < -5)
+        angle += 2;
+
+    if (angle > 179)
+        angle = 179;
+
+    if (angle < 40)
+        angle = 40;
+
+    servo1.write(angle);
+
+    delay(10);
+}
+
